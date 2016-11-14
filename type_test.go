@@ -22,37 +22,19 @@ func TestDeterminateImageType(t *testing.T) {
 	}
 
 	for _, file := range files {
+		if !VipsIsTypeSupported(file.expected) {
+			continue
+		}
 		img, _ := os.Open(path.Join("fixtures", file.name))
 		buf, _ := ioutil.ReadAll(img)
 		defer img.Close()
 
 		if DetermineImageType(buf) != file.expected {
-			t.Fatal("Image type is not valid")
+			t.Fatalf("Image type %#v is not valid", ImageTypes[file.expected])
 		}
-	}
-}
 
-func TestDeterminateImageTypeName(t *testing.T) {
-	files := []struct {
-		name     string
-		expected string
-	}{
-		{"test.jpg", "jpeg"},
-		{"test.png", "png"},
-		{"test.webp", "webp"},
-		{"test.gif", "gif"},
-		{"test.pdf", "pdf"},
-		{"test.svg", "svg"},
-		{"test.jp2", "magick"},
-	}
-
-	for _, file := range files {
-		img, _ := os.Open(path.Join("fixtures", file.name))
-		buf, _ := ioutil.ReadAll(img)
-		defer img.Close()
-
-		if DetermineImageTypeName(buf) != file.expected {
-			t.Fatal("Image type is not valid")
+		if DetermineImageTypeName(buf) != ImageTypes[file.expected] {
+			t.Fatal("Image type %#v is not valid", ImageTypes[file.expected])
 		}
 	}
 }
