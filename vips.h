@@ -294,7 +294,9 @@ vips_flatten_background_brigde(VipsImage *in, VipsImage **out, double r, double 
 
 	return vips_flatten(in, out,
 		"background", vipsBackground,
+#if (VIPS_MAJOR_VERSION >= 8 && VIPS_MINOR_VERSION >= 1)
 		"max_alpha", vips_is_16bit(in->Type) ? 65535.0 : 255.0,
+#endif
 		NULL
 	);
 }
