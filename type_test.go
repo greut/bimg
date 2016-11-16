@@ -19,6 +19,7 @@ func TestDeterminateImageType(t *testing.T) {
 		{"test.pdf", PDF},
 		{"test.svg", SVG},
 		{"test.jp2", MAGICK},
+		{"test.tiff", TIFF},
 	}
 
 	for _, file := range files {
@@ -26,8 +27,9 @@ func TestDeterminateImageType(t *testing.T) {
 		buf, _ := ioutil.ReadAll(img)
 		defer img.Close()
 
-		if DetermineImageType(buf) != file.expected {
-			t.Fatal("Image type is not valid")
+		actual := DetermineImageType(buf)
+		if IsTypeSupported(file.expected) && file.expected != actual {
+			t.Fatalf("Image type %#v != %#v", ImageTypes[file.expected], ImageTypes[actual])
 		}
 	}
 }
@@ -36,14 +38,16 @@ func TestDeterminateImageTypeName(t *testing.T) {
 	files := []struct {
 		name     string
 		expected string
+		typ      ImageType
 	}{
-		{"test.jpg", "jpeg"},
-		{"test.png", "png"},
-		{"test.webp", "webp"},
-		{"test.gif", "gif"},
-		{"test.pdf", "pdf"},
-		{"test.svg", "svg"},
-		{"test.jp2", "magick"},
+		{"test.jpg", "jpeg", JPEG},
+		{"test.png", "png", PNG},
+		{"test.webp", "webp", WEBP},
+		{"test.gif", "gif", GIF},
+		{"test.pdf", "pdf", PDF},
+		{"test.svg", "svg", SVG},
+		{"test.jp2", "magick", MAGICK},
+		{"test.tiff", "tiff", TIFF},
 	}
 
 	for _, file := range files {
@@ -51,22 +55,31 @@ func TestDeterminateImageTypeName(t *testing.T) {
 		buf, _ := ioutil.ReadAll(img)
 		defer img.Close()
 
-		if DetermineImageTypeName(buf) != file.expected {
-			t.Fatal("Image type is not valid")
+		actual := DetermineImageTypeName(buf)
+		if IsTypeSupported(file.typ) && file.expected != actual {
+			t.Fatalf("Image type %#v != %#v", file.expected, actual)
 		}
 	}
 }
 
 func TestIsTypeSupported(t *testing.T) {
 	types := []struct {
-		name ImageType
+		name     ImageType
+		expected bool
 	}{
-		{JPEG}, {PNG}, {WEBP}, {GIF}, {PDF},
+		{JPEG, true},
+		{PNG, true},
+		{WEBP, true},
+		{GIF, VipsVersion >= "8.3.0"},
+		{PDF, true},
+		{SVG, true},
+		{TIFF, VipsVersion >= "8.0.0"},
 	}
 
 	for _, n := range types {
-		if IsTypeSupported(n.name) == false {
-			t.Fatalf("Image type %#v is not valid", ImageTypes[n.name])
+		actual := IsTypeSupported(n.name)
+		if n.expected != actual {
+			t.Fatalf("Image type %#v support: %#v != %#v", ImageTypes[n.name], n.expected, actual)
 		}
 	}
 }
@@ -79,13 +92,16 @@ func TestIsTypeNameSupported(t *testing.T) {
 		{"jpeg", true},
 		{"png", true},
 		{"webp", true},
-		{"gif", true},
+		{"gif", VipsVersion >= "8.3.0"},
 		{"pdf", true},
+		{"svg", true},
+		{"tiff", VipsVersion >= "8.0.0"},
 	}
 
 	for _, n := range types {
-		if IsTypeNameSupported(n.name) != n.expected {
-			t.Fatalf("Image type %#v is not valid", n.name)
+		actual := IsTypeNameSupported(n.name)
+		if n.expected != actual {
+			t.Fatalf("Image type %#v support: %#v != %#v", n.name, n.expected, actual)
 		}
 	}
 }
