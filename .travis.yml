@@ -34,15 +34,18 @@ addons:
       - gobject-introspection
       - gtk-doc-tools
       - libcfitsio3-dev
+      - libexif-dev
       - libfftw3-dev
       - libgif-dev
       - libgs-dev
       - libgsf-1-dev
+      - libmagickcore-dev
       - libmatio-dev
       - libopenslide-dev
       - liborc-0.4-dev
       - libpango1.0-dev
       - libpoppler-glib-dev
+      - librsvg2-dev
       - libwebp-dev
 
 # VIPS 8.3.3 requires Poppler 0.30 which is not released on Trusty.
