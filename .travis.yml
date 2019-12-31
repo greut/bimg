@@ -34,6 +34,7 @@ addons:
       - libgs-dev
       - libgsf-1-dev
       - libmatio-dev
+      - libnifti-dev
       - libopenslide-dev
       - liborc-0.4-dev
       - libpango1.0-dev
@@ -64,6 +65,7 @@ before_install:
     --enable-gtk-doc=no
     --enable-pyvips8=no
     --without-python
+    --without-heif
     --prefix=$HOME/libvips
     $1
   - make
