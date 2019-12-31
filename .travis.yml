@@ -33,6 +33,8 @@ addons:
       - libglib2.0-dev
       - libgs-dev
       - libgsf-1-dev
+      - libmagickcore-dev
+      - libmagickwand-dev
       - libmatio-dev
       - libnifti-dev
       - libopenslide-dev

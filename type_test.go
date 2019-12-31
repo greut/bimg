@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestDeterminateImageType(t *testing.T) {
+func TestDetermineImageType(t *testing.T) {
 	files := []struct {
 		name     string
 		expected ImageType
@@ -27,14 +27,15 @@ func TestDeterminateImageType(t *testing.T) {
 		defer img.Close()
 
 		if VipsIsTypeSupported(file.expected) {
-			if DetermineImageType(buf) != file.expected {
-				t.Fatalf("Image type is not valid: %s != %s", file.name, ImageTypes[file.expected])
+			result := DetermineImageType(buf)
+			if result != file.expected {
+				t.Fatalf("Image type is not valid: %s. %v != %s", file.name, result, ImageTypes[file.expected])
 			}
 		}
 	}
 }
 
-func TestDeterminateImageTypeName(t *testing.T) {
+func TestDetermineImageTypeName(t *testing.T) {
 	files := []struct {
 		name     string
 		expected string
@@ -53,8 +54,9 @@ func TestDeterminateImageTypeName(t *testing.T) {
 		buf, _ := ioutil.ReadAll(img)
 		defer img.Close()
 
-		if DetermineImageTypeName(buf) != file.expected {
-			t.Fatalf("Image type is not valid: %s != %s", file.name, file.expected)
+		result := DetermineImageTypeName(buf)
+		if result != file.expected {
+			t.Fatalf("Image type is not valid: %s. %v != %s", file.name, result, file.expected)
 		}
 	}
 }
