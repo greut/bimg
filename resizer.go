@@ -12,9 +12,8 @@ import (
 	"math"
 )
 
-var (
-	ErrExtractAreaParamsRequired = errors.New("extract area width/height params are required")
-)
+// ErrExtractAreaParamsRequired represents the requirements error regarding parameters.
+var ErrExtractAreaParamsRequired = errors.New("extract area width/height params are required")
 
 // resizer is used to transform a given image as byte buffer
 // with the passed options.
